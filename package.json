@@ -1,10 +1,9 @@
 {
   "name": "falling-particles",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A simple React TypeScript component for creating falling animations (snow, confetti, etc)",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adamjanicki2/falling-particles.git"
@@ -15,13 +14,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
-    "test": "jest --config jestconfig.json",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
   "keywords": [
     "snow",

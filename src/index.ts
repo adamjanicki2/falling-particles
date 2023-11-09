@@ -1,3 +1,3 @@
-import Button from "./Button";
+import FallingParticles from "./FallingParticles";
 
-export { Button };
+export default FallingParticles;
