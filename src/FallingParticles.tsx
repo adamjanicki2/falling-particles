@@ -40,9 +40,7 @@ const FallingParticles = ({ style, className, ...props }: Props) => {
               FRAME_UPDATE
             );
           }
-          if (particle.isMovingOOB(width, height)) {
-            particle.resetPosition(width, height);
-          }
+          particle.checkOOB(width, height);
           particle.move();
         }
 

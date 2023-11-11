@@ -70,8 +70,13 @@ export type Props = {
    */
   shapes?: Shape[];
   /**
+   * Image srcs to use for the particles. (Takes precedence over colors and shapes.)
+   * @default []
+   */
+  images?: string[];
+  /**
    * Number of particles to render.
-   * @default 100
+   * @default 120
    */
   numParticles?: number;
   /**
@@ -81,6 +86,7 @@ export type Props = {
   sizeRange?: Range;
   /**
    * Range of x-speed of the particles in pixels per frame.
+   * @default
    * @example {min: -1, max: 1}
    */
   xSpeedRange?: Range;
@@ -96,7 +102,7 @@ export type Props = {
   rotationRange?: Range;
   /**
    * Custom styles to override the default styles.
-   * @example { position: "fixed", width: "100vw", height: "100vh"}
+   * @example {position: "fixed", width: "100vw", height: "100vh"}
    */
   style?: React.CSSProperties;
   /**
@@ -146,6 +152,9 @@ export const useParticles = (
         if (!config.shapes.includes(particle.state.shape)) {
           particle.state.shape = randomElement(config.shapes);
         }
+        if (!config.images.includes(particle.state.image as string)) {
+          particle.state.image = randomElement(config.images);
+        }
         if (
           particle.state.size < config.sizeRange.min ||
           particle.state.size > config.sizeRange.max
@@ -167,6 +176,8 @@ export const useParticles = (
       }
       return newParticles;
     });
+    // Have to disable this rule because we want to compare the serialized config
+    // Or else it won't deep compare nested config objects
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, height, serializedConfig]);
 

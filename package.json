@@ -1,6 +1,6 @@
 {
   "name": "falling-particles",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple React TypeScript component for creating falling animations (snow, confetti, etc)",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -14,17 +14,19 @@ export type ParticleState = {
   rotation: MovementStruct;
   size: number;
   shape: Shape;
+  image?: string;
   color: string;
 };
 
 export default class Particle {
+  private static imageCache: { [key: string]: HTMLImageElement } = {};
   state: ParticleState;
 
   constructor(params: ParticleState) {
     this.state = params;
   }
 
-  move() {
+  public move() {
     this.state.x.pos += this.state.x.vel;
     this.state.y.pos += this.state.y.vel;
     this.state.rotation.pos += this.state.rotation.vel;
@@ -33,9 +35,22 @@ export default class Particle {
     this.state.rotation.vel += this.state.rotation.acc;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D) {
     ctx.translate(this.state.x.pos, this.state.y.pos);
     ctx.rotate(convertToRadians(this.state.rotation.pos));
+    if (this.state.image) {
+      const size = Math.ceil(this.state.size);
+      if (!Particle.imageCache[this.state.image]) {
+        const image = new Image();
+        image.src = this.state.image;
+        Particle.imageCache[this.state.image] = image;
+      }
+
+      const image = Particle.imageCache[this.state.image];
+      ctx.drawImage(image, 0, 0, size, size);
+
+      return ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
     const radius = this.state.size / 2;
     ctx.fillStyle = this.state.color;
 
@@ -62,31 +77,32 @@ export default class Particle {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
-  updateMovement(vx: number, vy: number, omega: number, frameUpdate: number) {
+  public updateMovement(
+    vx: number,
+    vy: number,
+    omega: number,
+    frameUpdate: number
+  ) {
     this.state.x.acc = (vx - this.state.x.vel) / frameUpdate;
     this.state.y.acc = (vy - this.state.y.vel) / frameUpdate;
     this.state.rotation.acc = (omega - this.state.rotation.vel) / frameUpdate;
   }
 
-  isMovingOOB(width: number, height: number) {
-    return (
-      (this.state.x.pos < 0 && this.state.x.vel < 0) ||
-      (this.state.x.pos > width && this.state.x.vel > 0) ||
-      (this.state.y.pos > height && this.state.y.vel > 0) ||
-      (this.state.y.pos < 0 && this.state.y.vel < 0)
-    );
+  public checkOOB(width: number, height: number) {
+    if (this.state.x.pos < 0 && this.state.x.vel < 0) {
+      this.state.x.pos = width;
+    } else if (this.state.x.pos > width && this.state.x.vel > 0) {
+      this.state.x.pos = 0;
+    }
+    if (this.state.y.pos > height && this.state.y.vel > 0) {
+      this.state.y.pos = 0;
+    }
+    if (this.state.y.pos < 0 && this.state.y.vel < 0) {
+      this.state.y.pos = height;
+    }
   }
 
-  resetPosition(width: number, height: number) {
-    const dy = this.state.y.vel;
-    const yOffset = getRandom(0, height);
-    const y = dy > 0 ? 0 - yOffset : height + yOffset;
-    const x = getRandom(0, width);
-    this.state.x.pos = x;
-    this.state.y.pos = y;
-  }
-
-  static make(
+  public static make(
     width: number,
     height: number,
     config: ParticleConfig,
@@ -109,6 +125,7 @@ export default class Particle {
       frameUpdate;
     const color = randomElement(config.colors);
     const shape = randomElement(config.shapes);
+    const image = randomElement(config.images);
     const size = getRandom(config.sizeRange.min, config.sizeRange.max);
     return new Particle({
       x: {
@@ -129,6 +146,7 @@ export default class Particle {
       color,
       shape,
       size,
+      image,
     });
   }
 }
