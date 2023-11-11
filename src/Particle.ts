@@ -1,62 +1,47 @@
-import { TAU, Shape } from "./util";
+import {
+  TAU,
+  getRandom,
+  randomElement,
+  ParticleConfig,
+  Shape,
+  MovementStruct,
+  convertToRadians,
+} from "./util";
 
-function shiftTo(oldV: number, newV: number) {
-  return 0.99 * oldV + 0.01 * newV;
-}
-
-export default class Particle {
-  x: number;
-  y: number;
-  velX: [number, number]; // the next values
-  velY: [number, number];
-  rotationSpeed: [number, number];
-  rotation: number;
+export type ParticleState = {
+  x: MovementStruct;
+  y: MovementStruct;
+  rotation: MovementStruct;
   size: number;
   shape: Shape;
   color: string;
+};
 
-  constructor(
-    x: number,
-    y: number,
-    velX: [number, number],
-    velY: [number, number],
-    rotationSpeed: [number, number],
-    size: number,
-    shape: Shape,
-    color: string
-  ) {
-    this.x = x;
-    this.y = y;
-    this.velX = velX;
-    this.velY = velY;
-    this.rotationSpeed = rotationSpeed;
-    this.rotation = 0;
-    this.size = size;
-    this.shape = shape;
-    this.color = color;
+export default class Particle {
+  state: ParticleState;
+
+  constructor(params: ParticleState) {
+    this.state = params;
   }
 
   move() {
-    this.x += this.velX[0];
-    this.y += this.velY[0];
-    this.rotation += this.rotationSpeed[0];
-    this.velX[0] = shiftTo(this.velX[0], this.velX[1]);
-    this.velY[0] = shiftTo(this.velY[0], this.velY[1]);
-    this.rotationSpeed[0] = shiftTo(
-      this.rotationSpeed[0],
-      this.rotationSpeed[1]
-    );
+    this.state.x.pos += this.state.x.vel;
+    this.state.y.pos += this.state.y.vel;
+    this.state.rotation.pos += this.state.rotation.vel;
+    this.state.x.vel += this.state.x.acc;
+    this.state.y.vel += this.state.y.acc;
+    this.state.rotation.vel += this.state.rotation.acc;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.rotation);
-    const radius = this.size / 2;
-    ctx.fillStyle = this.color;
+    ctx.translate(this.state.x.pos, this.state.y.pos);
+    ctx.rotate(convertToRadians(this.state.rotation.pos));
+    const radius = this.state.size / 2;
+    ctx.fillStyle = this.state.color;
 
-    switch (this.shape) {
+    switch (this.state.shape) {
       case "square":
-        ctx.fillRect(-radius, -radius, this.size, this.size);
+        ctx.fillRect(-radius, -radius, this.state.size, this.state.size);
         break;
       case "triangle":
         ctx.beginPath();
@@ -75,5 +60,75 @@ export default class Particle {
 
     // Reset the transformation
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  updateMovement(vx: number, vy: number, omega: number, frameUpdate: number) {
+    this.state.x.acc = (vx - this.state.x.vel) / frameUpdate;
+    this.state.y.acc = (vy - this.state.y.vel) / frameUpdate;
+    this.state.rotation.acc = (omega - this.state.rotation.vel) / frameUpdate;
+  }
+
+  isMovingOOB(width: number, height: number) {
+    return (
+      (this.state.x.pos < 0 && this.state.x.vel < 0) ||
+      (this.state.x.pos > width && this.state.x.vel > 0) ||
+      (this.state.y.pos > height && this.state.y.vel > 0) ||
+      (this.state.y.pos < 0 && this.state.y.vel < 0)
+    );
+  }
+
+  resetPosition(width: number, height: number) {
+    const dy = this.state.y.vel;
+    const yOffset = getRandom(0, height);
+    const y = dy > 0 ? 0 - yOffset : height + yOffset;
+    const x = getRandom(0, width);
+    this.state.x.pos = x;
+    this.state.y.pos = y;
+  }
+
+  static make(
+    width: number,
+    height: number,
+    config: ParticleConfig,
+    frameUpdate: number
+  ): Particle {
+    const dx = getRandom(config.xSpeedRange.min, config.xSpeedRange.max);
+    const dy = getRandom(config.ySpeedRange.min, config.ySpeedRange.max);
+    const yOffset = getRandom(0, height);
+    const y = dy > 0 ? 0 - yOffset : height + yOffset;
+    const x = getRandom(0, width);
+    const dr = getRandom(config.rotationRange.min, config.rotationRange.max);
+    const d2x =
+      (getRandom(config.xSpeedRange.min, config.xSpeedRange.max) - dx) /
+      frameUpdate;
+    const d2y =
+      (getRandom(config.ySpeedRange.min, config.ySpeedRange.max) - dy) /
+      frameUpdate;
+    const d2r =
+      (getRandom(config.rotationRange.min, config.rotationRange.max) - dr) /
+      frameUpdate;
+    const color = randomElement(config.colors);
+    const shape = randomElement(config.shapes);
+    const size = getRandom(config.sizeRange.min, config.sizeRange.max);
+    return new Particle({
+      x: {
+        pos: x,
+        vel: dx,
+        acc: d2x,
+      },
+      y: {
+        pos: y,
+        vel: dy,
+        acc: d2y,
+      },
+      rotation: {
+        pos: dr,
+        vel: d2r,
+        acc: d2r,
+      },
+      color,
+      shape,
+      size,
+    });
   }
 }

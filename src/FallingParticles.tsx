@@ -1,104 +1,74 @@
 import { useEffect, useRef } from "react";
-import { Shape, DEFAULT_CONFIG as config, convertToRadians } from "./util";
-import { useElementSize } from "./hooks";
-import System from "./System";
+import {
+  DEFAULT_CONFIG as defaultConfig,
+  useElementSize,
+  useParticles,
+  Props,
+  ParticleConfig,
+  FRAME_UPDATE,
+  getRandom,
+} from "./util";
 
-type Props = {
-  /**
-   * Colors of the particles; must be valid CSS colors.
-   * @default ["#ffffff"]
-   * @example ["#ffffff", "#ff0000", "#00ff00", "#0000ff"]
-   */
-  colors?: string[];
-  /**
-   * Shapes of the particles.
-   * @default ["circle"]
-   * @example ["circle", "square", "triangle"]
-   */
-  shapes?: Shape[];
-  /**
-   * Number of particles to render.
-   * @default 100
-   */
-  particles?: number;
-  /**
-   * Size of the particles in pixels. (diameter for a circle, side length for a square, etc.)
-   * @example [1, 5]
-   */
-  sizeRange?: [number, number];
-  /**
-   * Range of x-speed of the particles in pixels per frame.
-   * @example [-1, 1]
-   */
-  xSpeedRange?: [number, number];
-  /**
-   * Range of y-speed of the particles in pixels per frame.
-   * @example [1, 5]
-   */
-  ySpeedRange?: [number, number];
-  /**
-   * Range of rotation speed of the particles in degrees per frame.
-   * @example [0, 360]
-   */
-  rotationRange?: [number, number];
-  /**
-   * Custom styles to override the default styles.
-   * @example { position: "fixed", width: "100vw", height: "100vh"}
-   */
-  style?: React.CSSProperties;
-  /**
-   * Custom class name
-   */
-  className?: string;
-};
-
-const FallingParticles = (props: Props) => {
-  const {
-    colors = config.colors,
-    shapes = config.shapes,
-    particles = config.particles,
-    sizeRange = config.sizeRange,
-    xSpeedRange = config.xSpeedRange,
-    ySpeedRange = config.ySpeedRange,
-    rotationRange = config.rotationRange,
-    className,
-  } = props;
-  const style = { ...config.style, ...(props.style ?? {}) };
+const FallingParticles = ({ style, className, ...props }: Props) => {
+  const config = {
+    ...(defaultConfig as any),
+  } as ParticleConfig;
+  for (const key in props) {
+    if (key in config) {
+      config[key as keyof ParticleConfig] = (props as any)[key];
+    }
+  }
+  const mergedStyle = { ...defaultConfig.style, ...(style ?? {}) };
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [width, height] = useElementSize(canvasRef);
+  const particles = useParticles(width, height, config);
+  const frameRef = useRef(0);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    const animate = () => {
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (canvas && ctx) {
+        const shouldUpdateAcceleration =
+          frameRef.current > 0 && (frameRef.current & (FRAME_UPDATE - 1)) === 0;
+        for (const particle of particles) {
+          if (shouldUpdateAcceleration) {
+            particle.updateMovement(
+              getRandom(config.xSpeedRange.min, config.xSpeedRange.max),
+              getRandom(config.ySpeedRange.min, config.ySpeedRange.max),
+              getRandom(config.rotationRange.min, config.rotationRange.max),
+              FRAME_UPDATE
+            );
+          }
+          if (particle.isMovingOOB(width, height)) {
+            particle.resetPosition(width, height);
+          }
+          particle.move();
+        }
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, width, height);
 
-    if (!ctx) return;
+        for (const particle of particles) {
+          particle.draw(ctx);
+        }
+      }
+      frameRef.current = requestAnimationFrame(animate);
+    };
 
-    const particleSystem = new System(
-      ctx,
-      width,
-      height,
-      [...colors],
-      [...shapes],
-      particles,
-      [...sizeRange],
-      [...xSpeedRange],
-      [...ySpeedRange],
-      [...rotationRange.map(convertToRadians)] as [number, number]
-    );
-    particleSystem.start();
-    return () => particleSystem.stop();
+    animate();
+
+    return () => cancelAnimationFrame(frameRef.current);
   }, [
+    particles,
     width,
     height,
-    colors,
-    particles,
-    sizeRange,
-    xSpeedRange,
-    ySpeedRange,
-    shapes,
-    rotationRange,
+    config.xSpeedRange.min,
+    config.xSpeedRange.max,
+    config.ySpeedRange.min,
+    config.ySpeedRange.max,
+    config.rotationRange.min,
+    config.rotationRange.max,
   ]);
 
   return (
@@ -106,7 +76,7 @@ const FallingParticles = (props: Props) => {
       ref={canvasRef}
       width={width}
       height={height}
-      style={style}
+      style={mergedStyle}
       className={className}
     />
   );
