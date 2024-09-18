@@ -1,0 +1,11 @@
+.no-bg * {
+  background-color: transparent !important;
+  background: none;
+}
+
+.snippet-container {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border-color: #555;
+  background-color: #f1f8ff;
+}

@@ -1,0 +1,20 @@
+.mobile {
+  display: none;
+}
+
+.main-container {
+  width: 100%;
+  padding: 64px;
+}
+
+@media only screen and (max-width: 768px) {
+  .mobile {
+    display: block;
+  }
+  .desktop {
+    display: none;
+  }
+  .main-container {
+    padding: 32px;
+  }
+}

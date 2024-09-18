@@ -1,0 +1,16 @@
+.octo {
+  opacity: 0;
+  position: absolute;
+  margin-left: -2rem;
+  padding: 0.5rem;
+}
+
+.octo:focus {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .has-octo-within:hover > .octo {
+    opacity: 1;
+  }
+}
