@@ -63,7 +63,18 @@ export default function Usage() {
       idea of what you can do with this library, and to give you a starting
       point for your own customizations. If you want to test some of them
       yourself, try adjusting some of the props below.
-      <FallingParticles style={{ backgroundColor: "#111" }} />
+      <FallingParticles
+        xSpeedRange={{
+          min: 2,
+          max: 4,
+        }}
+        rotationRange={{
+          min: -5,
+          max: -5,
+        }}
+        shapes={["circle", "square", "triangle"]}
+        style={{ backgroundColor: "#111" }}
+      />
     </section>
   );
 }

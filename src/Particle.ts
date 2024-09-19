@@ -6,6 +6,8 @@ import {
   Shape,
   MovementStruct,
   convertToRadians,
+  Range,
+  clamp,
 } from "./util";
 
 export type ParticleState = {
@@ -14,25 +16,28 @@ export type ParticleState = {
   rotation: MovementStruct;
   size: number;
   shape: Shape;
-  image?: string;
+  image?: HTMLImageElement;
   color: string;
 };
 
 export default class Particle {
-  private static imageCache: { [key: string]: HTMLImageElement } = {};
   public readonly state: ParticleState;
 
   private constructor(params: ParticleState) {
     this.state = params;
   }
 
-  public move() {
+  public move(xSpeedRange: Range, ySpeedRange: Range, rotationRange: Range) {
     this.state.x.pos += this.state.x.vel;
     this.state.y.pos += this.state.y.vel;
     this.state.rotation.pos += this.state.rotation.vel;
-    this.state.x.vel += this.state.x.acc;
-    this.state.y.vel += this.state.y.acc;
-    this.state.rotation.vel += this.state.rotation.acc;
+
+    this.state.x.vel = clamp(this.state.x.vel + this.state.x.acc, xSpeedRange);
+    this.state.y.vel = clamp(this.state.y.vel + this.state.y.acc, ySpeedRange);
+    this.state.rotation.vel = clamp(
+      this.state.rotation.vel + this.state.rotation.acc,
+      rotationRange
+    );
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
@@ -40,15 +45,7 @@ export default class Particle {
     ctx.rotate(convertToRadians(this.state.rotation.pos));
     if (this.state.image) {
       const size = Math.ceil(this.state.size);
-      if (!Particle.imageCache[this.state.image]) {
-        const image = new Image();
-        image.src = this.state.image;
-        Particle.imageCache[this.state.image] = image;
-      }
-
-      const image = Particle.imageCache[this.state.image];
-      ctx.drawImage(image, 0, 0, size, size);
-
+      ctx.drawImage(this.state.image, 0, 0, size, size);
       return ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
     const radius = this.state.size / 2;
@@ -78,17 +75,20 @@ export default class Particle {
   }
 
   public updateMovement(
-    vx: number,
-    vy: number,
-    omega: number,
+    xSpeedRange: Range,
+    ySpeedRange: Range,
+    rotationRange: Range,
     frameUpdate: number
   ) {
-    this.state.x.acc = (vx - this.state.x.vel) / frameUpdate;
-    this.state.y.acc = (vy - this.state.y.vel) / frameUpdate;
-    this.state.rotation.acc = (omega - this.state.rotation.vel) / frameUpdate;
+    const dx = getRandom(xSpeedRange.min, xSpeedRange.max);
+    this.state.x.acc = (dx - this.state.x.vel) / frameUpdate;
+    const dy = getRandom(ySpeedRange.min, ySpeedRange.max);
+    this.state.y.acc = (dy - this.state.y.vel) / frameUpdate;
+    const dr = getRandom(rotationRange.min, rotationRange.max);
+    this.state.rotation.acc = (dr - this.state.rotation.vel) / frameUpdate;
   }
 
-  public checkOOB(width: number, height: number) {
+  public clampBounds(width: number, height: number) {
     if (this.state.x.pos < 0 && this.state.x.vel < 0) {
       this.state.x.pos = width;
     } else if (this.state.x.pos > width && this.state.x.vel > 0) {
@@ -110,10 +110,12 @@ export default class Particle {
   ): Particle {
     const dx = getRandom(config.xSpeedRange.min, config.xSpeedRange.max);
     const dy = getRandom(config.ySpeedRange.min, config.ySpeedRange.max);
+    const dr = getRandom(config.rotationRange.min, config.rotationRange.max);
+
     const yOffset = getRandom(0, height);
     const y = dy > 0 ? 0 - yOffset : height + yOffset;
     const x = getRandom(0, width);
-    const dr = getRandom(config.rotationRange.min, config.rotationRange.max);
+
     const d2x =
       (getRandom(config.xSpeedRange.min, config.xSpeedRange.max) - dx) /
       frameUpdate;
@@ -125,7 +127,7 @@ export default class Particle {
       frameUpdate;
     const color = randomElement(config.colors);
     const shape = randomElement(config.shapes);
-    const image = randomElement(config.images);
+    const image = config.images ? randomElement(config.images) : undefined;
     const size = getRandom(config.sizeRange.min, config.sizeRange.max);
     return new Particle({
       x: {

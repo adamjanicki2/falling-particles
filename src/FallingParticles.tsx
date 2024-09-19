@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   DEFAULT_CONFIG,
   useElementSize,
@@ -6,18 +6,30 @@ import {
   Props,
   ParticleConfig,
   FRAME_UPDATE,
-  getRandom,
 } from "./util";
 
-const FallingParticles = ({ style, className, ...props }: Props) => {
+const FallingParticles = ({
+  style,
+  className,
+  images: imgSrcs,
+  ...props
+}: Props) => {
+  const images = useMemo(
+    () =>
+      imgSrcs?.map((src) => {
+        const img = new Image();
+        img.src = src;
+        return img;
+      }),
+    [imgSrcs]
+  );
+
   const config: ParticleConfig = {
     ...DEFAULT_CONFIG,
+    ...props,
+    images,
   };
-  for (const key in props) {
-    if (key in config) {
-      config[key as keyof ParticleConfig] = (props as any)[key];
-    }
-  }
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [width, height] = useElementSize(containerRef);
@@ -35,14 +47,18 @@ const FallingParticles = ({ style, className, ...props }: Props) => {
         for (const particle of particles) {
           if (shouldUpdateAcceleration) {
             particle.updateMovement(
-              getRandom(config.xSpeedRange.min, config.xSpeedRange.max),
-              getRandom(config.ySpeedRange.min, config.ySpeedRange.max),
-              getRandom(config.rotationRange.min, config.rotationRange.max),
+              config.xSpeedRange,
+              config.ySpeedRange,
+              config.rotationRange,
               FRAME_UPDATE
             );
           }
-          particle.checkOOB(width, height);
-          particle.move();
+          particle.clampBounds(width, height);
+          particle.move(
+            config.xSpeedRange,
+            config.ySpeedRange,
+            config.rotationRange
+          );
         }
 
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -69,6 +85,8 @@ const FallingParticles = ({ style, className, ...props }: Props) => {
     config.rotationRange.min,
     config.rotationRange.max,
   ]);
+
+  console.log("RERENDER");
 
   return (
     <div

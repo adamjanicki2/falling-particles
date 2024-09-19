@@ -46,7 +46,11 @@ export type Range = {
   max: number;
 };
 
-export type ParticleConfig = Required<Omit<Props, "style" | "className">>;
+export type ParticleConfig = Required<
+  Omit<Props, "style" | "className" | "images">
+> & {
+  images?: HTMLImageElement[];
+};
 
 export type Props = {
   /**
@@ -137,7 +141,7 @@ export const useParticles = (
   const serializedConfig = JSON.stringify(config);
 
   useEffect(() => {
-    if (width === 0 || height === 0) return;
+    if (!width || !height) return;
     setParticles((prev) => {
       const newParticles = [...prev];
       if (newParticles.length > config.numParticles) {
@@ -150,7 +154,10 @@ export const useParticles = (
         if (!config.shapes.includes(particle.state.shape)) {
           particle.state.shape = randomElement(config.shapes);
         }
-        if (!config.images.includes(particle.state.image as string)) {
+        if (
+          config.images &&
+          !config.images.includes(particle.state.image as HTMLImageElement)
+        ) {
           particle.state.image = randomElement(config.images);
         }
         if (
@@ -163,9 +170,9 @@ export const useParticles = (
           );
         }
         particle.updateMovement(
-          getRandom(config.xSpeedRange.min, config.xSpeedRange.max),
-          getRandom(config.ySpeedRange.min, config.ySpeedRange.max),
-          getRandom(config.rotationRange.min, config.rotationRange.max),
+          config.xSpeedRange,
+          config.ySpeedRange,
+          config.rotationRange,
           FRAME_UPDATE
         );
       }
@@ -176,8 +183,11 @@ export const useParticles = (
     });
     // Have to disable this rule because we want to compare the serialized config
     // Or else it won't deep compare nested config objects
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, height, serializedConfig]);
 
   return particles;
 };
+
+export function clamp(value: number, range: Range) {
+  return Math.min(Math.max(value, range.min), range.max);
+}
