@@ -142,33 +142,17 @@ export const useParticles = (
 
   useEffect(() => {
     if (!width || !height) return;
-    setParticles((prev) => {
-      const newParticles = [...prev];
+    setParticles((newParticles) => {
       if (newParticles.length > config.numParticles) {
         newParticles.splice(config.numParticles);
       }
       for (const particle of newParticles) {
-        if (!config.colors.includes(particle.state.color)) {
-          particle.state.color = randomElement(config.colors);
-        }
-        if (!config.shapes.includes(particle.state.shape)) {
-          particle.state.shape = randomElement(config.shapes);
-        }
-        if (
-          config.images &&
-          !config.images.includes(particle.state.image as HTMLImageElement)
-        ) {
+        particle.state.color = randomElement(config.colors);
+        particle.state.shape = randomElement(config.shapes);
+        if (config.images) {
           particle.state.image = randomElement(config.images);
         }
-        if (
-          particle.state.size < config.sizeRange.min ||
-          particle.state.size > config.sizeRange.max
-        ) {
-          particle.state.size = getRandom(
-            config.sizeRange.min,
-            config.sizeRange.max
-          );
-        }
+        particle.state.size = clamp(particle.state.size, config.sizeRange);
         particle.updateMovement(
           config.xSpeedRange,
           config.ySpeedRange,

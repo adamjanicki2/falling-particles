@@ -89,15 +89,15 @@ export default class Particle {
   }
 
   public clampBounds(width: number, height: number) {
-    if (this.state.x.pos < 0 && this.state.x.vel < 0) {
+    if (this.state.x.pos < -this.state.size && this.state.x.vel < 0) {
       this.state.x.pos = width;
     } else if (this.state.x.pos > width && this.state.x.vel > 0) {
-      this.state.x.pos = 0;
+      this.state.x.pos = -this.state.size;
     }
     if (this.state.y.pos > height && this.state.y.vel > 0) {
-      this.state.y.pos = 0;
+      this.state.y.pos = -this.state.size;
     }
-    if (this.state.y.pos < 0 && this.state.y.vel < 0) {
+    if (this.state.y.pos < -this.state.size && this.state.y.vel < 0) {
       this.state.y.pos = height;
     }
   }
