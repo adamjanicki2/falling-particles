@@ -86,8 +86,6 @@ const FallingParticles = ({
     config.rotationRange.max,
   ]);
 
-  console.log("RERENDER");
-
   return (
     <div
       ref={containerRef}
