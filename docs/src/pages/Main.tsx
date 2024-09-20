@@ -4,7 +4,7 @@ import Header from "src/components/Heading";
 import Para from "src/components/Para";
 import Snippet from "src/components/Snippet";
 import { ReactComponent as Logo } from "src/images/logo.svg";
-import Playground from "src/sections/Playground";
+import Examples from "src/sections/Examples";
 import Usage from "src/sections/Usage";
 
 const Main = () => (
@@ -23,12 +23,12 @@ const Main = () => (
       ways to customize the particles to your liking, including changing the
       color, size, and speed of the particles. All of this information will be
       fully detailed below in the <Link to="#usage">usage section</Link>. You
-      can also play around with the props and settings by visiting the{" "}
-      <Link to="#playground">playground</Link> toward the bottom of the page.
+      can also check out the <Link to="#examples">examples</Link> to see some of
+      the possibilities.
     </Para>
     <Snippet>{importLib}</Snippet>
     <Usage />
-    <Playground />
+    <Examples />
     <hr className="ba b--moon-gray mv3" />
     <Para>
       And that's all I got for you today. Hope you enjoy making fun animations
