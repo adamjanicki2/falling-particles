@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.css": "/falling-particles/static/css/main.2104da7f.css",
+    "main.js": "/falling-particles/static/js/main.65e6e48b.js",
+    "static/media/logo.svg": "/falling-particles/static/media/logo.2831f0c96169df31c2028d9b46f99083.svg",
+    "index.html": "/falling-particles/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.2104da7f.css",
+    "static/js/main.65e6e48b.js"
+  ]
+}
