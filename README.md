@@ -2,7 +2,7 @@
 
 A simple React TypeScript component for creating falling animations (snow, confetti, etc)
 
-_Demo site coming soon!_
+_Check out the [demo site](https://adamjanicki.xyz/falling-particles)!_
 
 ## Installation
 

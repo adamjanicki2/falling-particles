@@ -39,7 +39,7 @@ const Nav = () => {
       >
         <Navlink to="#installation">Installation</Navlink>
         <Navlink to="#usage">Usage</Navlink>
-        <Navlink to="#playground">Playground</Navlink>
+        <Navlink to="#examples">Examples</Navlink>
       </ul>
     </nav>
   );
