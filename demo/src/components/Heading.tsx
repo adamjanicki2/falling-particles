@@ -29,7 +29,7 @@ const Heading = ({ level, children }: Props) => {
     `h${level}`,
     { id, className: "has-octo-within flex items-center" },
     <HashLink id={id} />,
-    children,
+    children
   );
 };
 

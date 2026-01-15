@@ -19,8 +19,9 @@
     "README.md"
   ],
   "scripts": {
-    "lint": "eslint src --fix && prettier --write \"src/**/*.{ts,tsx,json,md}\"",
-    "build": "eslint src --max-warnings=0 && tsc",
+    "lint": "eslint src test --fix && prettier --write \"src/**/*.{ts,tsx,json,md}\" \"test/**/*.{ts,tsx}\"",
+    "test": "jest --silent",
+    "build": "npm test && eslint src test --max-warnings=0 && tsc",
     "prepare": "npm run build"
   },
   "keywords": [
@@ -32,7 +33,14 @@
     "react": ">=18"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.0.0",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
   }
 }
