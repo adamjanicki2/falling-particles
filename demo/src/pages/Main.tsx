@@ -3,7 +3,7 @@ import { importLib } from "src/codeSnippets";
 import Header from "src/components/Heading";
 import Para from "src/components/Para";
 import Snippet from "src/components/Snippet";
-import { ReactComponent as Logo } from "src/images/logo.svg";
+import Logo from "src/images/logo.svg?react";
 import Examples from "src/sections/Examples";
 import Usage from "src/sections/Usage";
 

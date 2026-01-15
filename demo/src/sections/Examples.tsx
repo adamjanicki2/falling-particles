@@ -3,7 +3,7 @@ import { images, leaves, neon, snow } from "src/codeSnippets";
 import Heading from "src/components/Heading";
 import HiddenSnippet from "src/components/HiddenSnippet";
 import Para from "src/components/Para";
-import FallingParticles from "src/lib";
+import FallingParticles from "falling-particles";
 
 export default function Examples() {
   return (

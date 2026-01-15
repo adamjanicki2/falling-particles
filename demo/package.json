@@ -1,0 +1,39 @@
+{
+  "name": "falling-particles-demo",
+  "version": "0.1.0",
+  "homepage": "https://adamjanicki.xyz/falling-particles",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@adamjanicki/ui": "*",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "falling-particles": "*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.5.0",
+    "tachyons": "^4.12.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "eslint src --max-warnings=0 && vite build && cp build/index.html build/404.html",
+    "lint": "eslint src --fix && prettier --write \"src/**/*.{ts,tsx,json,css,scss,md}\"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@vitejs/plugin-react": "^5.0.0",
+    "gh-pages": "^6.0.0",
+    "sass": "^1.90.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.1",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-svgr": "^4.3.0"
+  }
+}
