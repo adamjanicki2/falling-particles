@@ -105,7 +105,7 @@ export type Props = {
   className?: string;
 };
 
-export const useElementSize = (ref: React.RefObject<HTMLElement>) => {
+export const useElementSize = (ref: React.RefObject<HTMLElement | null>) => {
   const [size, setSize] = useState(() => getHTMLElementSize(ref.current));
 
   const handleResize = useCallback(() => {
@@ -139,7 +139,6 @@ export const useParticles = (
   config: ParticleConfig
 ) => {
   const [particles, setParticles] = useState<Particle[]>([]);
-  const serializedConfig = JSON.stringify(config);
 
   useEffect(() => {
     if (!width || !height) return;
@@ -166,9 +165,7 @@ export const useParticles = (
       }
       return newParticles;
     });
-    // Have to disable this rule because we want to compare the serialized config
-    // Or else it won't deep compare nested config objects
-  }, [width, height, serializedConfig]);
+  }, [width, height, config]);
 
   return particles;
 };

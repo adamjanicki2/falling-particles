@@ -15,6 +15,15 @@ const FallingParticles = ({
   images: imgSrcs,
   ...props
 }: Props) => {
+  const {
+    colors = DEFAULT_CONFIG.colors,
+    shapes = DEFAULT_CONFIG.shapes,
+    numParticles = DEFAULT_CONFIG.numParticles,
+    sizeRange = DEFAULT_CONFIG.sizeRange,
+    xSpeedRange = DEFAULT_CONFIG.xSpeedRange,
+    ySpeedRange = DEFAULT_CONFIG.ySpeedRange,
+    rotationRange = DEFAULT_CONFIG.rotationRange,
+  } = props;
   const images = useMemo(
     () =>
       imgSrcs?.map((src) => {
@@ -25,11 +34,28 @@ const FallingParticles = ({
     [imgSrcs]
   );
 
-  const config: ParticleConfig = {
-    ...DEFAULT_CONFIG,
-    ...props,
-    images,
-  };
+  const config = useMemo<ParticleConfig>(
+    () => ({
+      colors,
+      shapes,
+      numParticles,
+      sizeRange,
+      xSpeedRange,
+      ySpeedRange,
+      rotationRange,
+      images,
+    }),
+    [
+      images,
+      colors,
+      shapes,
+      numParticles,
+      sizeRange,
+      xSpeedRange,
+      ySpeedRange,
+      rotationRange,
+    ]
+  );
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -48,18 +74,14 @@ const FallingParticles = ({
         for (const particle of particles) {
           if (shouldUpdateAcceleration) {
             particle.updateMovement(
-              config.xSpeedRange,
-              config.ySpeedRange,
-              config.rotationRange,
+              xSpeedRange,
+              ySpeedRange,
+              rotationRange,
               FRAME_UPDATE
             );
           }
           particle.clampBounds(width, height);
-          particle.move(
-            config.xSpeedRange,
-            config.ySpeedRange,
-            config.rotationRange
-          );
+          particle.move(xSpeedRange, ySpeedRange, rotationRange);
         }
 
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -75,17 +97,7 @@ const FallingParticles = ({
     animate();
 
     return () => cancelAnimationFrame(frameRef.current);
-  }, [
-    particles,
-    width,
-    height,
-    config.xSpeedRange.min,
-    config.xSpeedRange.max,
-    config.ySpeedRange.min,
-    config.ySpeedRange.max,
-    config.rotationRange.min,
-    config.rotationRange.max,
-  ]);
+  }, [particles, width, height, xSpeedRange, ySpeedRange, rotationRange]);
 
   return (
     <div

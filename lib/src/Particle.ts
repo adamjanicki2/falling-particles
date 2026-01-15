@@ -36,7 +36,7 @@ export default class Particle {
     this.state.y.vel = clamp(this.state.y.vel + this.state.y.acc, ySpeedRange);
     this.state.rotation.vel = clamp(
       this.state.rotation.vel + this.state.rotation.acc,
-      rotationRange
+      rotationRange,
     );
   }
 
@@ -78,7 +78,7 @@ export default class Particle {
     xSpeedRange: Range,
     ySpeedRange: Range,
     rotationRange: Range,
-    frameUpdate: number
+    frameUpdate: number,
   ) {
     const dx = getRandom(xSpeedRange.min, xSpeedRange.max);
     this.state.x.acc = (dx - this.state.x.vel) / frameUpdate;
@@ -106,7 +106,7 @@ export default class Particle {
     width: number,
     height: number,
     config: ParticleConfig,
-    frameUpdate: number
+    frameUpdate: number,
   ): Particle {
     const dx = getRandom(config.xSpeedRange.min, config.xSpeedRange.max);
     const dy = getRandom(config.ySpeedRange.min, config.ySpeedRange.max);
