@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
+
 import {
   DEFAULT_CONFIG,
+  FRAME_UPDATE,
+  ParticleConfig,
+  Props,
   useElementSize,
   useParticles,
-  Props,
-  ParticleConfig,
-  FRAME_UPDATE,
 } from "./util";
 
 const FallingParticles = ({

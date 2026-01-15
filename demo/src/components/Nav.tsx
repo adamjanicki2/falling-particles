@@ -1,6 +1,7 @@
-import { useState } from "react";
 import "src/components/nav.css";
-import { Link, UnstyledLink, Hamburger } from "@adamjanicki/ui";
+
+import { Hamburger, Link, UnstyledLink } from "@adamjanicki/ui";
+import { useState } from "react";
 import Logo from "src/images/logo.svg?react";
 
 type NavlinkProps = {

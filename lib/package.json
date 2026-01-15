@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "lint": "eslint src --fix && prettier --write \"src/**/*.{ts,tsx,json,md}\"",
-    "build": "eslint src test --max-warnings=0 && tsc",
+    "build": "eslint src --max-warnings=0 && tsc",
     "prepare": "npm run build"
   },
   "keywords": [

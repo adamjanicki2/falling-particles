@@ -1,13 +1,13 @@
 import {
-  TAU,
-  getRandom,
-  randomElement,
-  ParticleConfig,
-  Shape,
-  MovementStruct,
-  convertToRadians,
-  Range,
   clamp,
+  convertToRadians,
+  getRandom,
+  MovementStruct,
+  ParticleConfig,
+  randomElement,
+  Range,
+  Shape,
+  TAU,
 } from "./util";
 
 export type ParticleState = {

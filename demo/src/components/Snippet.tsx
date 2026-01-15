@@ -1,11 +1,12 @@
+import "src/components/snippet.css";
+
+import { Badge, Button } from "@adamjanicki/ui";
+import { classNames } from "@adamjanicki/ui/functions";
+import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight as light } from "react-syntax-highlighter/dist/esm/styles/prism";
-import "src/components/snippet.css";
-import { Badge, Button } from "@adamjanicki/ui";
-import { classNames } from "@adamjanicki/ui/functions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons";
 
 export type Props = {
   className?: string;
