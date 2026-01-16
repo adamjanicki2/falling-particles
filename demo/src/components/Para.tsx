@@ -1,11 +1,9 @@
+import { ui } from "@adamjanicki/ui";
+
 type Props = {
   children?: React.ReactNode | React.ReactNode[];
 };
 
-const Para = ({ children }: Props) => (
-  <p className="f5 fw4" style={{ lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
-    {children}
-  </p>
-);
-
-export default Para;
+export default function Para({ children }: Props) {
+  return <ui.p vfx={{ lineHeight: "m" }}>{children}</ui.p>;
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ReadonlyableArray<T> = T[] | readonly T[];
 type Shape = "circle" | "square" | "triangle";
@@ -59,17 +59,14 @@ export default function FallingParticles({
   style,
   className,
   images: imgSrcs,
-  ...props
+  colors = DEFAULT_CONFIG.colors,
+  shapes = DEFAULT_CONFIG.shapes,
+  numParticles = DEFAULT_CONFIG.numParticles,
+  sizeRange = DEFAULT_CONFIG.sizeRange,
+  xSpeedRange = DEFAULT_CONFIG.xSpeedRange,
+  ySpeedRange = DEFAULT_CONFIG.ySpeedRange,
+  rotationRange = DEFAULT_CONFIG.rotationRange,
 }: Props) {
-  const {
-    colors = DEFAULT_CONFIG.colors,
-    shapes = DEFAULT_CONFIG.shapes,
-    numParticles = DEFAULT_CONFIG.numParticles,
-    sizeRange = DEFAULT_CONFIG.sizeRange,
-    xSpeedRange = DEFAULT_CONFIG.xSpeedRange,
-    ySpeedRange = DEFAULT_CONFIG.ySpeedRange,
-    rotationRange = DEFAULT_CONFIG.rotationRange,
-  } = props;
   const images = useMemo(
     () =>
       imgSrcs?.map((src) => {
@@ -116,8 +113,9 @@ export default function FallingParticles({
       const ctx = canvas?.getContext("2d");
       if (canvas && ctx) {
         const shouldUpdateAcceleration =
-          frameRef.current > 0 && (frameRef.current & (FRAME_UPDATE - 1)) === 0;
-        for (const particle of particles) {
+          frameRef.current > 0 && !(frameRef.current & (FRAME_UPDATE - 1));
+
+        particles.forEach((particle) => {
           if (shouldUpdateAcceleration) {
             particle.updateMovement(
               xSpeedRange,
@@ -128,14 +126,12 @@ export default function FallingParticles({
           }
           particle.clampBounds(width, height);
           particle.move(xSpeedRange, ySpeedRange, rotationRange);
-        }
+        });
 
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, width, height);
 
-        for (const particle of particles) {
-          particle.draw(ctx);
-        }
+        particles.forEach((particle) => particle.draw(ctx));
       }
       frameRef.current = requestAnimationFrame(animate);
     };
@@ -151,7 +147,7 @@ export default function FallingParticles({
       style={{
         overflow: "hidden",
         width: "100%",
-        height: "50vh",
+        height: "360px",
         pointerEvents: "none",
         ...style,
       }}
@@ -163,7 +159,7 @@ export default function FallingParticles({
 }
 
 const TAU = 2 * Math.PI;
-// must be power of 2 for bitwise operations
+// must be power of 2 for cool bitwise mod trick
 const FRAME_UPDATE = 256;
 
 function uniform(min: number, max: number) {
@@ -205,27 +201,17 @@ type ParticleConfig = Required<
 const useElementSize = (ref: React.RefObject<HTMLElement | null>) => {
   const [size, setSize] = useState(() => getHTMLElementSize(ref.current));
 
-  const handleResize = useCallback(() => {
-    const element = ref.current;
-    if (element) {
-      setSize(getHTMLElementSize(element));
-    }
-  }, [ref]);
-
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
 
     // ResizeObserver to detect changes in the element's size
+    const handleResize = () => setSize(getHTMLElementSize(element));
     const resizeObserver = new ResizeObserver(handleResize);
-
     resizeObserver.observe(element);
-
-    // Initial size set
     handleResize();
-
     return () => resizeObserver.disconnect();
-  }, [handleResize, ref]);
+  }, [ref]);
 
   return size;
 };
@@ -239,28 +225,39 @@ const useParticles = (
 
   useEffect(() => {
     if (!width || !height) return;
-    setParticles((newParticles) => {
-      if (newParticles.length > config.numParticles) {
-        newParticles.splice(config.numParticles);
+    const {
+      numParticles,
+      colors,
+      shapes,
+      images,
+      sizeRange,
+      xSpeedRange,
+      ySpeedRange,
+      rotationRange,
+    } = config;
+    setParticles((particles) => {
+      if (particles.length > numParticles) {
+        particles.splice(numParticles);
       }
-      for (const particle of newParticles) {
-        particle.state.color = randomElement(config.colors);
-        particle.state.shape = randomElement(config.shapes);
-        if (config.images) {
-          particle.state.image = randomElement(config.images);
+      particles.forEach((particle) => {
+        particle.state.color = randomElement(colors);
+        particle.state.shape = randomElement(shapes);
+        if (images) {
+          particle.state.image = randomElement(images);
         }
-        particle.state.size = clamp(particle.state.size, config.sizeRange);
+        particle.state.size = clamp(particle.state.size, sizeRange);
         particle.updateMovement(
-          config.xSpeedRange,
-          config.ySpeedRange,
-          config.rotationRange,
+          xSpeedRange,
+          ySpeedRange,
+          rotationRange,
           FRAME_UPDATE
         );
+      });
+
+      while (particles.length < numParticles) {
+        particles.push(Particle.make(width, height, config, FRAME_UPDATE));
       }
-      while (newParticles.length < config.numParticles) {
-        newParticles.push(Particle.make(width, height, config, FRAME_UPDATE));
-      }
-      return newParticles;
+      return particles;
     });
   }, [width, height, config]);
 

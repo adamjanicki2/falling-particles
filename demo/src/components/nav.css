@@ -1,10 +1,15 @@
+:root {
+  --nav-background-color: white;
+  --nav-box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
 .nav {
   position: sticky;
   width: 100%;
   top: 0;
-  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--nav-box-shadow);
   z-index: 1000;
-  background-color: white;
+  background-color: var(--nav-background-color);
 }
 
 .link-container {
@@ -24,19 +29,16 @@
 }
 
 .navlink {
-  color: black;
+  color: var(--aui-color-default);
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 820px) {
   .bar-container {
     width: 100%;
   }
   .link-container,
   .nav {
     flex-direction: column;
-  }
-  .nav-open {
-    height: 100vh;
   }
   .link-container {
     width: 100%;

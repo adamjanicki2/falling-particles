@@ -1,4 +1,4 @@
-import { Animated, Button } from "@adamjanicki/ui";
+import { Animated, Box, Button } from "@adamjanicki/ui";
 import { useState } from "react";
 import Snippet, { type Props } from "src/components/Snippet";
 
@@ -6,20 +6,21 @@ export default function HiddenSnippet(props: Props) {
   const [show, setShow] = useState(false);
   return (
     <>
-      <div className="flex w-100 justify-end">
+      <Box vfx={{ axis: "x", justify: "end", width: "full" }}>
         <Button
-          className="fw6 f7 mv2"
-          style={{ padding: "3px 6px" }}
+          vfx={{ marginY: "s" }}
           onClick={() => setShow(!show)}
           variant="secondary"
+          size="small"
         >
           {show ? "Hide" : "Show"} Code
         </Button>
-      </div>
+      </Box>
       <Animated
+        vfx={{ axis: "x", justify: "center", width: "full" }}
         visible={show}
-        enter={{ style: { opacity: 1 } }}
-        exit={{ style: { opacity: 0 } }}
+        to={{ opacity: 1 }}
+        from={{ opacity: 0 }}
       >
         <Snippet {...props} />
       </Animated>
