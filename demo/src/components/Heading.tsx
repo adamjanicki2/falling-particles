@@ -1,36 +1,31 @@
 import "src/components/heading.css";
 
-import { Link } from "@adamjanicki/ui";
-import React from "react";
+import { Link, ui } from "@adamjanicki/ui";
 
 type Props = {
-  level: number;
   children: string;
+  level: 1 | 2;
 };
 
-function HashLink({ id }: { id: string }) {
-  return (
-    <Link className="octo" to={`#${id}`}>
-      #
-    </Link>
-  );
-}
-
-function headingToId(heading: string) {
-  return heading
+const headingToId = (heading: string) =>
+  heading
     .toLowerCase()
-    .replace(/ /g, "-")
-    .replace(/[^a-zA-Z0-9-]/g, "");
-}
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/gi, "");
 
-const Heading = ({ level, children }: Props) => {
+export default function Heading({ children, level }: Props) {
   const id = headingToId(children);
-  return React.createElement(
-    `h${level}`,
-    { id, className: "has-octo-within flex items-center" },
-    <HashLink id={id} />,
-    children
+  const Component = ui[`h${level}`];
+  return (
+    <Component
+      id={id}
+      className="has-octo-within"
+      vfx={{ axis: "x", align: "center", width: "full" }}
+    >
+      <Link className="octo" to={`#${id}`}>
+        #
+      </Link>
+      {children}
+    </Component>
   );
-};
-
-export default Heading;
+}

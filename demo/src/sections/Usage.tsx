@@ -1,3 +1,4 @@
+import { ui } from "@adamjanicki/ui";
 import Heading from "src/components/Heading";
 import Para from "src/components/Para";
 
@@ -10,11 +11,11 @@ const particleProps = [
   "xSpeedRange",
   "ySpeedRange",
   "rotationRange",
-];
+] as const;
 
 export default function Usage() {
   return (
-    <section id="usage-section">
+    <ui.section id="usage-section">
       <Heading level={1}>Usage</Heading>
       <Para>
         There are a good amount of props you can customize to make this act the
@@ -26,39 +27,40 @@ export default function Usage() {
       <Para>
         The props thay you can apply to the particles include:{" "}
         {particleProps.map((prop, i) => (
-          <span key={prop}>
+          <ui.span key={prop}>
             {i > 0 && ", "}
-            <code>{prop}</code>
-          </span>
+            <ui.code>{prop}</ui.code>
+          </ui.span>
         ))}
-        . <code>colors</code> is an array of valid CSS colors that the particles
-        will be selected randomly from; <code>shapes</code> is an array of
-        shapes that the particles can be; <code>images</code> is an array of
-        image URLs that the particles can be; <code>numParticles</code> is the
-        number of particles that will be rendered; <code>sizeRange</code> is an
-        object with <code>min</code> and <code>max</code> properties that
+        . <ui.code>colors</ui.code> is an array of valid CSS colors that the
+        particles will be selected randomly from; <ui.code>shapes</ui.code> is
+        an array of shapes that the particles can be; <ui.code>images</ui.code>{" "}
+        is an array of image URLs that the particles can be;{" "}
+        <ui.code>numParticles</ui.code> is the number of particles that will be
+        rendered; <ui.code>sizeRange</ui.code> is an object with{" "}
+        <ui.code>min</ui.code> and <ui.code>max</ui.code> properties that
         determine the range of sizes the particles can be;{" "}
-        <code>xSpeedRange</code> is an object with <code>min</code> and{" "}
-        <code>max</code> properties that determine the range of horizontal
-        speeds the particles can have; <code>ySpeedRange</code> is an object
-        with <code>min</code> and <code>max</code> properties that determine the
-        range of vertical speeds the particles can have;{" "}
-        <code>rotationRange</code> is an object with <code>min</code> and{" "}
-        <code>max</code> properties that determine the range of rotation speeds
-        the particles can have.
+        <ui.code>xSpeedRange</ui.code> is an object with <ui.code>min</ui.code>{" "}
+        and <ui.code>max</ui.code> properties that determine the range of
+        horizontal speeds the particles can have; <ui.code>ySpeedRange</ui.code>{" "}
+        is an object with <ui.code>min</ui.code> and <ui.code>max</ui.code>{" "}
+        properties that determine the range of vertical speeds the particles can
+        have; <ui.code>rotationRange</ui.code> is an object with{" "}
+        <ui.code>min</ui.code> and <ui.code>max</ui.code> properties that
+        determine the range of rotation speeds the particles can have.
       </Para>
       <Heading level={2}>Container Props</Heading>
       <Para>
         The props that you can apply to the container include:{" "}
-        <code>style</code> and <code>className</code>. <code>style</code> is an
-        object of CSS properties that will be applied to the container div;{" "}
-        <code>className</code> is a string that will be applied as a class name
-        to the container div. The purpose of wrapping a container div around the
-        actual canvas is that typical CSS width and height attributes don't
-        really work on canvas elements, so you can use the container div to
-        control the size of the canvas, and the canvas will automatically resize
-        to fit the container!
+        <ui.code>style</ui.code> and <ui.code>className</ui.code>.{" "}
+        <ui.code>style</ui.code> is an object of CSS properties that will be
+        applied to the container div; <ui.code>className</ui.code> is a string
+        that will be applied as a class name to the container div. The purpose
+        of wrapping a container div around the actual canvas is that typical CSS
+        width and height attributes don't really work on canvas elements, so you
+        can use the container div to control the size of the canvas, and the
+        canvas will automatically resize to fit the container!
       </Para>
-    </section>
+    </ui.section>
   );
 }

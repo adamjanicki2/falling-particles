@@ -1,4 +1,4 @@
-import { Link } from "@adamjanicki/ui";
+import { Link, ui } from "@adamjanicki/ui";
 import FallingParticles from "falling-particles";
 import { images, leaves, neon, snow } from "src/codeSnippets";
 import Heading from "src/components/Heading";
@@ -7,7 +7,7 @@ import Para from "src/components/Para";
 
 export default function Examples() {
   return (
-    <section id="examples-container">
+    <ui.section id="examples-container">
       <Heading level={1}>Examples</Heading>
       <Para>
         Below you will find examples ranging from simple to complex, along with
@@ -15,17 +15,13 @@ export default function Examples() {
         idea of what you can do with this library, and to give you a starting
         point for your own customizations. If you want to test some of them
         yourself, you can head over to my{" "}
-        <Link
-          target="_blank"
-          rel="noreferrer"
-          to="https://adamjanicki.xyz/react-playground"
-        >
+        <Link newTab to="https://adamjanicki.xyz/react-playground">
           React Playground
         </Link>{" "}
         to import the library and start playing around with it.
       </Para>
       <Heading level={2}>Classic Snow</Heading>
-      <FallingParticles style={{ backgroundColor: "#111" }} />
+      <FallingParticles style={{ backgroundColor: "black" }} />
       <HiddenSnippet>{snow}</HiddenSnippet>
       <Heading level={2}>Falling Leaves</Heading>
       <FallingParticles
@@ -75,11 +71,9 @@ export default function Examples() {
           min: 10,
           max: 20,
         }}
-        images={[
-          "https://static-00.iconduck.com/assets.00/snowflake-emoji-447x512-o823v80t.png",
-        ]}
+        images={["https://adamjanicki.xyz/images/logo512.png"]}
       />
       <HiddenSnippet>{images}</HiddenSnippet>
-    </section>
+    </ui.section>
   );
 }

@@ -1,9 +1,7 @@
 import "src/components/snippet.css";
 
-import { Badge, Button } from "@adamjanicki/ui";
-import { classNames } from "@adamjanicki/ui/functions";
-import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Badge, Box, Button, classNames, Icon, ui } from "@adamjanicki/ui";
+import { check, clipboard } from "@adamjanicki/ui/icons";
 import { useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight as light } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -14,45 +12,67 @@ export type Props = {
   lang?: string;
 };
 
-const Snippet = ({ className, children, lang = "tsx" }: Props) => {
+export default function Snippet({ className, children, lang = "tsx" }: Props) {
   children = children.trim();
   const [copied, setCopied] = useState(false);
 
   const copyCode = () => {
     navigator.clipboard.writeText(children);
     setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+    window.setTimeout(() => setCopied(false), 3000);
   };
 
   return (
-    <div
-      className={classNames("snippet-container ba br2 m-auto", className)}
-      style={{ maxWidth: "100%", width: "min-content" }}
+    <Box
+      vfx={{
+        marginX: "auto",
+        maxWidth: "full",
+        width: "min",
+        radius: "rounded",
+        border: true,
+        borderColor: "primary",
+        shadow: "floating",
+      }}
+      className={classNames("snippet-container", className)}
     >
-      <div className="flex justify-between items-center w-100 bb ph2 pv1">
-        <p className="f6 fw5 ma0">{lang}</p>
+      <Box
+        vfx={{
+          axis: "x",
+          align: "center",
+          justify: "between",
+          width: "full",
+          paddingX: "s",
+          paddingY: "xs",
+          borderBottom: true,
+          borderColor: "primary",
+        }}
+      >
+        <ui.span vfx={{ fontSize: "s", fontWeight: 5 }}>{lang}</ui.span>
         {copied ? (
-          <Badge className="flex items-center" type="success">
-            <FontAwesomeIcon icon={faCheck} className="mr1" /> Copied
+          <Badge vfx={{ axis: "x", align: "center", gap: "xs" }} type="success">
+            <Icon icon={check} /> Copied
           </Badge>
         ) : (
           <Button
+            vfx={{ axis: "x", align: "center", gap: "xs", paddingY: "xxs" }}
             onClick={copyCode}
-            style={{ padding: "3px 6px" }}
-            className="f6 fw6"
+            size="small"
             variant="secondary"
           >
-            <FontAwesomeIcon icon={faClipboard} className="mr1" />
+            <Icon icon={clipboard} />
             Copy
           </Button>
         )}
-      </div>
-      <pre
-        className="flex w-100 pa2 ma0"
-        style={{
-          overflow: "scroll",
-          maxHeight: "70vh",
+      </Box>
+      <ui.pre
+        vfx={{
+          axis: "x",
+          margin: "none",
+          overflow: "auto",
+          padding: "s",
+          width: "full",
         }}
+        style={{ maxHeight: "70vh" }}
       >
         <SyntaxHighlighter
           style={light}
@@ -67,9 +87,7 @@ const Snippet = ({ className, children, lang = "tsx" }: Props) => {
         >
           {children}
         </SyntaxHighlighter>
-      </pre>
-    </div>
+      </ui.pre>
+    </Box>
   );
-};
-
-export default Snippet;
+}

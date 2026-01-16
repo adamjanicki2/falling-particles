@@ -3,11 +3,10 @@
 }
 
 .main-container {
-  width: 100%;
-  padding: 64px;
+  padding: 32px 64px;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 820px) {
   .mobile {
     display: block;
   }
@@ -15,6 +14,6 @@
     display: none;
   }
   .main-container {
-    padding: 32px;
+    padding: 16px 32px;
   }
 }

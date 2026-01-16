@@ -1,49 +1,59 @@
 import "src/components/nav.css";
 
-import { Hamburger, Link, UnstyledLink } from "@adamjanicki/ui";
+import { Box, Hamburger, Icon, Link, ui, UnstyledLink } from "@adamjanicki/ui";
+import { architect } from "@adamjanicki/ui/icons";
 import { useState } from "react";
-import Logo from "src/images/logo.svg?react";
 
 type NavlinkProps = {
   to: string;
   children: React.ReactNode;
 };
 
-const Nav = () => {
+export default function Nav() {
   const [open, setOpen] = useState(false);
   const closeMenu = () => setOpen(false);
 
-  const Navlink = (props: NavlinkProps) => (
-    <li className="navlink-li">
-      <Link className="navlink" onClick={closeMenu} {...props} />
-    </li>
-  );
+  function Navlink(props: NavlinkProps) {
+    return (
+      <ui.li className="navlink-li">
+        <Link className="navlink" onClick={closeMenu} {...props} />
+      </ui.li>
+    );
+  }
 
   return (
-    <nav className="flex items-center justify-between w-100 nav pv2 ph4">
-      <div className="flex items-center justify-between bar-container">
-        <UnstyledLink className="nav-title" to="#installation">
-          <span className="desktop">falling-particles</span>
-          <Logo style={{ height: 32 }} className="mobile" />
+    <ui.nav
+      vfx={{
+        axis: "x",
+        align: "center",
+        justify: "between",
+        width: "full",
+        paddingY: "s",
+        paddingX: "l",
+      }}
+      className="nav"
+    >
+      <Box
+        vfx={{ axis: "x", align: "center", justify: "between" }}
+        className="bar-container"
+      >
+        <UnstyledLink className="nav-title" to="/" onClick={closeMenu}>
+          <Box className="desktop">falling-particles</Box>
+          <Icon icon={architect} size="l" className="mobile" />
         </UnstyledLink>
-        <div className="mobile">
-          <Hamburger
-            open={open}
-            onClick={() => setOpen(!open)}
-            duration={0.3}
-          />
-        </div>
-      </div>
-      <ul
-        className="flex items-center desktop link-container ma0"
+        <Box className="mobile">
+          <Hamburger open={open} onClick={() => setOpen(!open)} />
+        </Box>
+      </Box>
+      <ui.ul
+        vfx={{ axis: "x", align: "center", margin: "none" }}
+        className="desktop link-container"
         style={{ display: open ? "flex" : undefined }}
       >
         <Navlink to="#installation">Installation</Navlink>
         <Navlink to="#usage">Usage</Navlink>
         <Navlink to="#examples">Examples</Navlink>
-      </ul>
-    </nav>
+      </ui.ul>
+    </ui.nav>
   );
-};
-
-export default Nav;
+}
