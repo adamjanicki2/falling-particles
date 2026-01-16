@@ -1,42 +1,19 @@
 {
-  "name": "falling-particles",
-  "version": "1.0.5",
+  "name": "falling-particles-workspace",
   "description": "A simple React TypeScript component for creating falling animations (snow, confetti, etc)",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/adamjanicki2/falling-particles.git"
-  },
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "lib",
+    "demo"
   ],
-  "scripts": {
-    "build": "tsc",
-    "copy": "rm -rf ./docs/src/lib && cp -r ./src ./docs/src/lib",
-    "dev": "nodemon --watch src --ext ts,tsx,css --exec \"npm run copy\"",
-    "prepare": "npm run build"
-  },
-  "keywords": [
-    "snow",
-    "confetti",
-    "falling particles"
-  ],
-  "author": "Adam Janicki",
-  "license": "MIT",
-  "peerDependencies": {
-    "react": ">=18"
-  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
-    "eslint": "^8.53.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "nodemon": "^3.1.4",
-    "typescript": ">=5.0.0"
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.3.0",
+    "prettier": "^3.7.4",
+    "typescript-eslint": "^8.39.0"
   }
 }
